@@ -33,3 +33,12 @@ textarea.materialize-textarea:focus:not([readonly]){
 .button{
   margin-right: 20px;
 }
+
+.profile{
+  padding: 20px;
+  margin-top: 60px;
+}
+
+nav li input {
+  color: #fff;
+}

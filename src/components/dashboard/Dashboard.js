@@ -7,16 +7,37 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { Redirect } from 'react-router-dom';
 
 class Dashboard extends Component {
+
+    shouldComponentUpdate(nextProps, nextState){
+        if(nextProps.q !== this.props.q){
+            return true;
+        }
+        else if(this.props.projects){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    componentWillUpdate(){
+        this.props.projects.filter(el =>{
+            el.title.includes(this.props.q)
+        })
+    }
+
     render() { 
         //console.log(this.props);
-        const { projects, auth, notifications } = this.props;
-        if(!auth.uid) return <Redirect to='/signin'/>
+        const { projects, auth, notifications, q } = this.props;
 
+        let filteredProjects = projects;
+        
+        if(!auth.uid) return <Redirect to='/signin'/>
         return (
             <div className="dashboard container">
                 <div className="row">
                     <div className="col s12 m6">
-                        <ProjectList projects={projects} />
+                        <ProjectList projects={this.props.projects} />
                     </div>
                     <div className="col s12 m5 offset-m1">
                         <Notifications notifications={notifications}/>
@@ -27,18 +48,27 @@ class Dashboard extends Component {
     }
 }
 
+const getSearchedProjects = (projects, q) => {
+    if(q){
+        return projects.filter(p => p.title.toLowerCase().startsWith(q.toLowerCase()));
+    }
+    else{
+        return projects
+    }
+}
+
 const mapStateToProps = (state) => {
     return {
-        projects: state.firestore.ordered.projects,
+        projects: getSearchedProjects(state.firestore.ordered.projects, state.search.q),
         auth: state.firebase.auth,
-        notifications: state.firestore.ordered.notifications
+        notifications: state.firestore.ordered.notifications,
     }
 };
  
 export default compose(
     connect(mapStateToProps),
     firestoreConnect([
-        { collection: 'projects', orderBy:['createdAt', 'desc'] },
+        { collection: 'projects', orderBy:['createdAt', 'desc']},
         { collection: 'notifications', limit: 3, orderBy:['time', 'desc']}
     ])
 )(Dashboard);
