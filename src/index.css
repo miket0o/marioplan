@@ -42,3 +42,15 @@ textarea.materialize-textarea:focus:not([readonly]){
 nav li input {
   color: #fff;
 }
+
+.search-icon{
+  background: transparent;
+  color: #fff;
+  border: none;
+  height: 64px;
+  width: 50px;
+}
+
+.search-icon:hover{
+  cursor: pointer;
+}

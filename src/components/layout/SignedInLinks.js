@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signOut } from '../../store/actions/authActions';
 import M from 'materialize-css';
+import SearchInput from './SearchInput';
+import SearchButton from './SearchButton';
 
 class SignedInLinks extends Component{
     componentDidMount(){
@@ -10,21 +12,11 @@ class SignedInLinks extends Component{
         M.Dropdown.init(elems, {inDuration: 300, outDuration: 225, alignment: 'right', coverTrigger: false});
     }
 
-    handleChange(e){
-        let q = e.target.value;
-        try{
-            this.props.search(q);
-        }
-        catch(err){
-            console.log(err);
-        }
-    }
-
     render(){
         return (
             <ul className="right">
                 <li>
-                    <input type="text" id="search" name="search" placeholder="Search..." onChange={this.handleChange.bind(this)}/>
+                    <SearchInput />
                 </li>
                 <li>
                     <NavLink to="/create">New Project</NavLink>
@@ -48,8 +40,7 @@ class SignedInLinks extends Component{
 
 const mapDispatchToProps = dispatch => {
     return{
-        signOut: () => dispatch(signOut()),
-        search: (val) => dispatch({type: 'SEARCH_TODO', val})
+        signOut: () => dispatch(signOut())
     }
 }
 
